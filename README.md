@@ -9,7 +9,7 @@
 
 ## Screenshots
 
-![App Screenshot](https://i.imgur.com/WKcGxkI.png)
+![App Screenshot](blob:https://imgur.com/2ebb3adb-3df9-4673-bcb5-faf45f32995b)
 
 # Tech Stack
 
