@@ -1,4 +1,4 @@
-### IndiciBVB Web Scraper
+## IndiciBVB Web Scraper
 
 ## A specialized ASP.NET Core MVC application designed to track and archive financial indices from the Bucharest Stock Exchange (BVB).
  
