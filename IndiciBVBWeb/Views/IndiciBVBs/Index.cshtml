@@ -1,0 +1,62 @@
+﻿@model IEnumerable<IndiciBVBWeb.Models.IndiciBVB>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<form asp-action="UpdateIndiciBVB" method="post">
+    <button type="submit" class="btn btn-primary">Sync</button>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nume)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ValoareUnitara)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CastigValoare)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CastigProcent)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Data)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nume)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ValoareUnitara)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CastigValoare)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CastigProcent)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Data)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
