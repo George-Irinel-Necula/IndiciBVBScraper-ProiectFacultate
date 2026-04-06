@@ -7,6 +7,7 @@
         public double ValoareUnitara { get; set; }
         public double CastigValoare { get; set; }
         public double CastigProcent { get; set; }
-        public string Data { get; set; }
+        public DateTime Data { get; set; }
+        public string Sursa { get; set; }
     }
 }

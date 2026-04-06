@@ -3,7 +3,6 @@ using IndiciBVBWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
@@ -25,7 +24,7 @@ namespace IndiciBVBWeb.Controllers
         public async Task<IActionResult> UpdateIndiciBVB()
         {
             try
-            {   
+            {
                 using (var driver = new ChromeDriver())
                 {
                     driver.Navigate().GoToUrl("https://m.bvb.ro/TradingAndStatistics/Trading/MarketsToday");
@@ -37,8 +36,9 @@ namespace IndiciBVBWeb.Controllers
                         double valoareUnitara = Convert.ToDouble(values[0].Text.Replace(".", "").Replace(",", "."));
                         double crestereValoare = Convert.ToDouble(values[1].Text.Replace(".", "").Replace(",", "."));
                         double crestereProcent = Convert.ToDouble(values[2].Text.Replace("%", "").Replace(",", "."));
-                        string date = DateTime.Today.ToString();
-                        IndiciBVB obiect_Db=new IndiciBVB() { Nume = nume.Text, ValoareUnitara = valoareUnitara, CastigValoare = crestereValoare, CastigProcent = crestereProcent, Data = date };
+                        DateTime date = DateTime.Now;
+                        string sursa = "BVB";
+                        IndiciBVB obiect_Db = new IndiciBVB() { Nume = nume.Text, ValoareUnitara = valoareUnitara, CastigValoare = crestereValoare, CastigProcent = crestereProcent, Data = date,Sursa=sursa };
                         _context.IndiciBVB.Add(obiect_Db);
                     }
                     await _context.SaveChangesAsync();
@@ -46,16 +46,63 @@ namespace IndiciBVBWeb.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception (you can use a logging framework like Serilog or NLog)
-                Console.WriteLine($"Error updating Indici BVB: {ex.Message}");
+                Console.WriteLine($"Eroare Indici BVB: {ex.Message}");
             }
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> UpdateIndiciBVB2()
+        {
+            try
+            {
+                using (var driver = new ChromeDriver())
+                {
+                    driver.Navigate().GoToUrl("https://www.primet.ro/informatii-piata-raport-zilnic");
+                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+                    var indiciDiv = driver.FindElement(By.CssSelector("div.box-indici.bg-bleumarin"));
 
+                    IList<IWebElement> rows = indiciDiv
+                        .FindElement(By.CssSelector("tbody"))
+                        .FindElements(By.CssSelector("tr"));
+
+                    foreach (var row in rows.Skip(1))
+                    {
+                        IWebElement nume = row.FindElement(By.CssSelector("td:nth-child(1)"));
+                        IList<IWebElement> values = row.FindElements(By.CssSelector("td.text-right"));
+
+
+                        if (values.Count >= 3)
+                        {
+                            double valoareUnitara = Convert.ToDouble(values[0].Text.Replace(".", "").Replace(",", "."));
+                            double crestereProcent = Convert.ToDouble(values[1].Text.Replace("%", "").Replace(",", "."));
+                            double crestereValoare = Math.Round(valoareUnitara * (crestereProcent / 100), 2);
+
+                            IndiciBVB obiect_Db = new IndiciBVB()
+                            {
+                                Nume = nume.Text,
+                                ValoareUnitara = valoareUnitara,
+                                CastigValoare = crestereValoare,
+                                CastigProcent = crestereProcent,
+                                Data = DateTime.Now,
+                                Sursa = "Primet"
+                            };
+
+                            _context.IndiciBVB.Add(obiect_Db);
+                        }
+                    }
+
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Eroare Indici BVB: {ex.Message}");
+            }
+            return RedirectToAction(nameof(Index));
+        }
         // GET: IndiciBVBs
         public async Task<IActionResult> Index()
         {
-            return View(await _context.IndiciBVB.ToListAsync());
+            return View(await _context.IndiciBVB.OrderByDescending(d => d.Data).ThenBy(n => n.Nume).ToListAsync());
         }
 
         // GET: IndiciBVBs/Details/5
@@ -72,7 +119,7 @@ namespace IndiciBVBWeb.Controllers
             {
                 return NotFound();
             }
-            
+
             return View(indiciBVB);
         }
 
@@ -87,7 +134,7 @@ namespace IndiciBVBWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nume,ValoareUnitara,CastigValoare,CastigProcent,Data")] IndiciBVB indiciBVB)
+        public async Task<IActionResult> Create([Bind("Id,Nume,ValoareUnitara,CastigValoare,CastigProcent,Data,Sursa")] IndiciBVB indiciBVB)
         {
             if (ModelState.IsValid)
             {
@@ -119,7 +166,7 @@ namespace IndiciBVBWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nume,ValoareUnitara,CastigValoare,CastigProcent,Data")] IndiciBVB indiciBVB)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nume,ValoareUnitara,CastigValoare,CastigProcent,Data,Sursa")] IndiciBVB indiciBVB)
         {
             if (id != indiciBVB.Id)
             {

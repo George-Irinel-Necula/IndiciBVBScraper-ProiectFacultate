@@ -9,28 +9,40 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<form asp-action="UpdateIndiciBVB" method="post">
-    <button type="submit" class="btn btn-primary">Sync</button>
-</form>
+<div style="display:flex; gap:10px; align-items:center;">
+    <form asp-action="UpdateIndiciBVB" method="post">
+        <button type="submit" class="btn btn-primary">Sync</button>
+    </form>
+
+    <form asp-action="UpdateIndiciBVB2" method="post">
+        <button type="submit" class="btn btn-primary">Sync Secondary</button>
+    </form>
+</div>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Nume)
+                Nume
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ValoareUnitara)
+                ValoareUnitara
+            </th>
+
+            <th>
+                CastigValoare
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CastigValoare)
+                CastigProcent
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CastigProcent)
+                Data
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Data)
+                Sursa
             </th>
-            <th></th>
+            <th>
+                Operatii
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -42,14 +54,40 @@
             <td>
                 @Html.DisplayFor(modelItem => item.ValoareUnitara)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CastigValoare)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CastigProcent)
-            </td>
+                <td>
+                    @if (item.Sursa == "BVB")
+                    {
+                        @($"{item.CastigValoare}/Ora")
+                    }
+                    else if (item.Sursa == "Primet")
+                    {
+                        @($"{item.CastigValoare}/Zi")
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.CastigValoare)
+                    }
+                </td>
+
+                <td>
+                    @if (item.Sursa == "BVB")
+                    {
+                        @($"{item.CastigProcent}%/Ora")
+                    }
+                    else if (item.Sursa == "Primet")
+                    {
+                        @($"{item.CastigProcent}%/Zi")
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.CastigProcent)
+                    }
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Data)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sursa)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
