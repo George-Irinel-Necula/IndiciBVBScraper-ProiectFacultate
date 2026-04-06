@@ -53,7 +53,9 @@ using (var scope = app.Services.CreateScope())
 
     try
     {
-        using (var driverBVB = new ChromeDriver())
+        var options = new ChromeOptions();
+        options.AddArgument("--headless=new");
+        using (var driverBVB = new ChromeDriver(options))
         {
             driverBVB.Navigate().GoToUrl("https://m.bvb.ro/TradingAndStatistics/Trading/MarketsToday");
             var rowsBVB = driverBVB.FindElement(By.CssSelector("#gv.small-table"))

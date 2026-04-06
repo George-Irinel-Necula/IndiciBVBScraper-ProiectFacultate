@@ -25,7 +25,9 @@ namespace IndiciBVBWeb.Controllers
         {
             try
             {
-                using (var driver = new ChromeDriver())
+                var options = new ChromeOptions();
+                options.AddArgument("--headless=new");
+                using (var driver = new ChromeDriver(options))
                 {
                     driver.Navigate().GoToUrl("https://m.bvb.ro/TradingAndStatistics/Trading/MarketsToday");
                     IList<IWebElement> rows = driver.FindElement(By.CssSelector("#gv.small-table")).FindElements(By.CssSelector("tbody tr"));
@@ -54,7 +56,9 @@ namespace IndiciBVBWeb.Controllers
         {
             try
             {
-                using (var driver = new ChromeDriver())
+                var options = new ChromeOptions();
+                options.AddArgument("--headless=new");
+                using (var driver = new ChromeDriver(options))
                 {
                     driver.Navigate().GoToUrl("https://www.primet.ro/informatii-piata-raport-zilnic");
                     driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
